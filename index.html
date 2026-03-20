@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIZZATTACKER | FULL SCREEN CYBER</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        body {
+            background-color: #000;
+            color: #ff0000;
+            font-family: 'Share Tech Mono', monospace;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        /* Background Layers */
+        #canvas, #snow_canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #canvas { z-index: -2; opacity: 0.3; }
+        #snow_canvas { z-index: -1; opacity: 0.5; }
+
+        /* Floating Text (No Box) */
+        .content {
+            position: relative;
+            z-index: 10;
+            pointer-events: none; /* Klik tembus ke background */
+        }
+
+        h1 {
+            font-size: 4em;
+            margin: 0;
+            letter-spacing: 10px;
+            text-shadow: 0 0 20px #ff0000, 0 0 40px #aa0000;
+            animation: glitch 1s infinite;
+        }
+
+        .sub-text {
+            font-size: 1.2em;
+            color: #fff;
+            background: rgba(255, 0, 0, 0.5);
+            padding: 5px 20px;
+            margin-top: 10px;
+            letter-spacing: 3px;
+            box-shadow: 0 0 15px #ff0000;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.8em;
+            color: #660000;
+            letter-spacing: 2px;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 3px); text-shadow: 2px 0 blue; }
+            40% { transform: translate(3px, -3px); text-shadow: -2px 0 cyan; }
+            60% { transform: translate(-3px, -3px); }
+            80% { transform: translate(3px, 3px); }
+            100% { transform: translate(0); }
+        }
+    </style>
+</head>
+<body onclick="runAudio()">
+
+    <canvas id="canvas"></canvas>
+    <canvas id="snow_canvas"></canvas>
+
+    <div class="content">
+        <h1>RIZZATTACKER</h1>
+        <div class="sub-text">CYBER ACTIVITY ACTIVE</div>
+    </div>
+
+    <div class="footer">
+        TOUCH SCREEN TO INITIALIZE NEURAL VOICE
+    </div>
+
+    <script>
+        // --- MATRIX RED EFFECT ---
+        const mCanvas = document.getElementById('canvas');
+        const mCtx = mCanvas.getContext('2d');
+        mCanvas.width = window.innerWidth;
+        mCanvas.height = window.innerHeight;
+
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+        const fontSize = 16;
+        const columns = mCanvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            mCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
+            mCtx.fillStyle = '#ff0000';
+            mCtx.font = fontSize + 'px monospace';
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                mCtx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > mCanvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 35);
+
+        // --- DIGITAL SNOW EFFECT ---
+        const sCanvas = document.getElementById('snow_canvas');
+        const sCtx = sCanvas.getContext('2d');
+        sCanvas.width = window.innerWidth;
+        sCanvas.height = window.innerHeight;
+
+        const snowParticles = [];
+        for (let i = 0; i < 100; i++) {
+            snowParticles.push({
+                x: Math.random() * sCanvas.width,
+                y: Math.random() * sCanvas.height,
+                r: Math.random() * 3,
+                d: Math.random() * 1 + 0.5
+            });
+        }
+
+        function drawSnow() {
+            sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
+            sCtx.fillStyle = '#ffcccc';
+            sCtx.beginPath();
+            for (let i = 0; i < snowParticles.length; i++) {
+                let p = snowParticles[i];
+                sCtx.moveTo(p.x, p.y);
+                sCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+            }
+            sCtx.fill();
+            for (let i = 0; i < snowParticles.length; i++) {
+                let p = snowParticles[i];
+                p.y += p.d;
+                if (p.y > sCanvas.height) snowParticles[i].y = -10;
+            }
+        }
+        setInterval(drawSnow, 30);
+
+        // --- ROBOT VOICE PROTOCOL ---
+        function runAudio() {
+            let msg = new SpeechSynthesisUtterance();
+            msg.text = "THIS IS RIZZ CYBER AKTIVITY";
+            msg.lang = "en-US";
+            msg.volume = 1;
+            msg.rate = 0.9; // Agak lambat biar ngeri
+            msg.pitch = 0.1; // Suara berat/deep
+            window.speechSynthesis.speak(msg);
+        }
+    </script>
+</body>
+</html>
